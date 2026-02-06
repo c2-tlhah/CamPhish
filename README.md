@@ -1,6 +1,6 @@
 # CamPhish
 
-**CamPhish** is a lightweight and effective phishing tool designed to capture photos and videos from a target's front and back cameras using a generated link. It utilizes PHP for the web server and ngrok for tunneling to make the phishing page accessible over the internet.
+**CamPhish** is a lightweight and effective phishing tool designed to capture photos and videos from a target's front and back cameras using a generated link. It utilizes PHP for the web server and Cloudflare Tunnel (cloudflared) for secure tunneling to make the phishing page accessible over the internet.
 
 > **⚠️ DISCLAIMER:**  
 > This tool is for **EDUCATIONAL PURPOSES ONLY**.  
@@ -14,9 +14,10 @@
 
 - 📸 **Take Photos**: Captures images from both Front and Back cameras.
 - 📹 **Record Video**: Records short video clips from Front and Back cameras.
-- 🌐 **Tunneling**: Auto-generates a public URL using **ngrok**.
+- 🌐 **Tunneling**: Auto-generates a public URL using **Cloudflare Tunnel** (no authentication token required).
 - ⚙️ **Customizable**: Modify recording duration and photo counts via `main.py` or interactive prompts.
 - 📂 **Auto-Save**: Saves captured media directly to the `uploads/` directory.
+- 🔒 **No Rate Limits**: Uses Cloudflare's free tunnel service with no rate limits or authentication requirements.
 
 ---
 
@@ -26,7 +27,7 @@ Before running the tool, ensure you have the following installed:
 
 1.  **Python 3**
 2.  **PHP**
-3.  **Ngrok** (with a valid authtoken)
+3.  **Cloudflared** (Cloudflare Tunnel)
 4.  **Git**
 
 ### 📦 Installation
@@ -52,13 +53,15 @@ pip3 install watchdog colorama
 ```bash
 sudo apt update
 sudo apt install php python3 python3-pip git -y
-sudo snap install ngrok  # Or download from ngrok.com
+# Install cloudflared
+wget https://github.com/cloudflare/cloudflared/releases/latest/download/cloudflared-linux-amd64.deb
+sudo dpkg -i cloudflared-linux-amd64.deb
 ```
 
 **Termux**:
 ```bash
 pkg update
-pkg install php python git -y
+pkg install php python git cloudflared -y
 ```
 
 **Windows**:
@@ -77,10 +80,16 @@ pkg install php python git -y
 3. **Install Git** (Optional but recommended):
    - Download from [git-scm.com](https://git-scm.com/download/win)
    
-4. **Install Ngrok**:
-   - Download from [Ngrok.com](https://ngrok.com/download)
-   - Extract `ngrok.exe` to a folder (e.g., `C:\ngrok`)
+4. **Install Cloudflared**:
+   - Download from [Cloudflare](https://github.com/cloudflare/cloudflared/releases/latest)
+   - Download `cloudflared-windows-amd64.exe` and rename it to `cloudflared.exe`
+   - Move to a folder (e.g., `C:\cloudflared`)
    - Add the folder to System PATH (same steps as PHP)
+   
+   Or use Winget:
+   ```powershell
+   winget install cloudflare.cloudflared
+   ```
    
 5. **Install Dependencies**:
    Open Command Prompt or PowerShell and run:
@@ -90,16 +99,9 @@ pkg install php python git -y
 
 ---
 
-## 🔧 Configuration (Important!)
+## 🔧 Configuration
 
-You need an **Ngrok Authtoken** to use the tunneling feature.
-
-1.  Go to [ngrok dashboard](https://dashboard.ngrok.com/get-started/your-authtoken) and copy your authtoken.
-2.  Add it to the tool:
-    ```bash
-    ngrok config add-authtoken <YOUR_TOKEN_HERE>
-    ```
-    *Alternatively, the script will ask for it on first run.*
+**No configuration needed!** Cloudflare Tunnel works out of the box without any authentication tokens or setup. Just install cloudflared and run the script.
 
 ---
 
@@ -118,7 +120,7 @@ python main.py
 ### Steps:
 1.  The tool will launch and ask if you want to configure `index.html` settings (Photo count, video duration).
 2.  It will start a local PHP server.
-3.  It will start an Ngrok tunnel and display a **Public URL** (e.g., `https://abcd-1234.ngrok-free.app`).
+3.  It will start a Cloudflare tunnel and display a **Public URL** (e.g., `https://random-name.trycloudflare.com`).
 4.  **Send this URL to the target.**
 5.  When the target opens the link and allows camera permissions, photos/videos will be captured.
 6.  Captured files will appear in the `uploads/` folder and you will be notified in the terminal.
@@ -127,10 +129,13 @@ python main.py
 
 ## ❓ Troubleshooting
 
-- **"No ngrok URL found"**:
-    - Ensure your Ngrok token is valid.
+- **"cloudflared is NOT installed"**:
+    - Follow the installation instructions for your OS above.
+    - Ensure cloudflared is added to your system PATH.
+- **"No Cloudflare URL found"**:
     - Check your internet connection.
-    - If you are in a restricted region, use a VPN.
+    - Try restarting the script.
+    - Cloudflare tunnels are free and unlimited, no authentication needed.
 - **"php: command not found"** (Linux/Mac) or **"'php' is not recognized"** (Windows):
     - Ensure PHP is installed and added to your system PATH.
     - On Windows, restart Command Prompt/PowerShell after adding to PATH.
