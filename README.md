@@ -1,58 +1,116 @@
-# Camera Phishing 
+# CamPhish
 
-A page to take pictures from the front and back camera
+**CamPhish** is a lightweight and effective phishing tool designed to capture photos and videos from a target's front and back cameras using a generated link. It utilizes PHP for the web server and ngrok for tunneling to make the phishing page accessible over the internet.
 
-This program requires php, ngrok and python! 
-Please install these prerequisites before running
+> **⚠️ DISCLAIMER:**  
+> This tool is for **EDUCATIONAL PURPOSES ONLY**.  
+> The author and contributors are not responsible for any misuse of this tool.  
+> Do not use this tool on systems or devices you do not have permission to test.  
+> Hacking without permission is illegal.
 
-# requires
+---
 
-- Install Ngrok
-  
-  - Widnows: https://ngrok.com/download/windows
-  - Linux: https://ngrok.com/download/linux
-  - Termux: https://github.com/Yisus7u7/termux-ngrok
- 
-- Install php
+## 🚀 Features
 
-  - Windows: https://www.php.net/downloads.php
-  - Linux: sudo apt install php
-  - Termux: pkg install php
- 
-- Install Python (py)
+- 📸 **Take Photos**: Captures images from both Front and Back cameras.
+- 📹 **Record Video**: Records short video clips from Front and Back cameras.
+- 🌐 **Tunneling**: Auto-generates a public URL using **ngrok**.
+- ⚙️ **Customizable**: Modify recording duration and photo counts via `main.py` or interactive prompts.
+- 📂 **Auto-Save**: Saves captured media directly to the `uploads/` directory.
 
-  - Windows: <a href="https://www.python.org/downloads/release/python-3120/">Download
-  - Linux: sudo apt install python
-  - Termux: pkg install python
- 
+---
 
-# ScreenShot
+## 📋 Prerequisites
 
-<img src="https://github.com/user-attachments/assets/957246ed-f465-4a08-bb98-30f9f07c5870">
+Before running the tool, ensure you have the following installed:
 
+1.  **Python 3**
+2.  **PHP**
+3.  **Ngrok** (with a valid authtoken)
+4.  **Git**
 
-After installing ngrok, enter the site and register, get your token and enter the token with this command:
-`ngrok config add-authtoken <token>`
+### 📦 Installation
 
-Now run the program:
-
-```
-git clone https://github.com/Mr-Spect3r/CamPhish
+#### 1. Clone the Repository
+```bash
+git clone https://github.com/c2-tlhah/CamPhish.git
 cd CamPhish
-python main.py
 ```
 
-If you are running it for the first time, you must enter your ngrok token
+#### 2. Install Dependencies
+**Linux / Termux / macOS**:
+```bash
+pip3 install -r requirements.txt
+# If requirements.txt is missing, install manually:
+pip3 install watchdog colorama
+```
+*Note: On some Linux distributions, you may need to use `pip3 install --break-system-packages ...` if you are not in a virtual environment.*
 
-Now, if you like, you can change the index.html file, for example, take a few photos from the back or front camera or record a few seconds of video.
+#### 3. Install System Packages
 
-Now, if you have done all the steps correctly, the program will give you a link, give that link to the victim so that you can take photos and videos from it!
+**Debian/Ubuntu/Kali Linux**:
+```bash
+sudo apt update
+sudo apt install php python3 python3-pip git -y
+sudo snap install ngrok  # Or download from ngrok.com
+```
 
-Photos are saved in the uploads folder! If you are in termux, use this command to transfer the photos to your gallery: 
-`cp -r uploads /sdcard`
+**Termux**:
+```bash
+pkg update
+pkg install php python git -y
+```
 
-My Telegram: https://t.me/MrEsfelurm
-https://t.me/esfelorm
-https://t.me/TmCroc
+**Windows**:
+- Download and install [Python](https://www.python.org/downloads/)
+- Download and install [PHP](https://www.php.net/downloads.php) (Add to PATH)
+- Download [Ngrok](https://ngrok.com/download)
 
-Vip tools: https://github.com/Mr-Spect3r/My-Tools
+---
+
+## 🔧 Configuration (Important!)
+
+You need an **Ngrok Authtoken** to use the tunneling feature.
+
+1.  Go to [ngrok dashboard](https://dashboard.ngrok.com/get-started/your-authtoken) and copy your authtoken.
+2.  Add it to the tool:
+    ```bash
+    ngrok config add-authtoken <YOUR_TOKEN_HERE>
+    ```
+    *Alternatively, the script will ask for it on first run.*
+
+---
+
+## 🎮 Usage
+
+Run the script using Python:
+
+```bash
+python3 main.py
+```
+
+### Steps:
+1.  The tool will launch and ask if you want to configure `index.html` settings (Photo count, video duration).
+2.  It will start a local PHP server.
+3.  It will start an Ngrok tunnel and display a **Public URL** (e.g., `https://abcd-1234.ngrok-free.app`).
+4.  **Send this URL to the target.**
+5.  When the target opens the link and allows camera permissions, photos/videos will be captured.
+6.  Captured files will appear in the `uploads/` folder and you will be notified in the terminal.
+
+---
+
+## ❓ Troubleshooting
+
+- **"No ngrok URL found"**:
+    - Ensure your Ngrok token is valid.
+    - Check your internet connection.
+    - If you are in a restricted region, use a VPN.
+- **"php: command not found"**:
+    - Ensure PHP is installed and added to your system PATH.
+- **"ModuleNotFoundError"**:
+    - Run `pip3 install watchdog colorama`.
+
+---
+
+## 📜 Credits
+- Developed by **c2-tlhah**

