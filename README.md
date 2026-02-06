@@ -62,9 +62,31 @@ pkg install php python git -y
 ```
 
 **Windows**:
-- Download and install [Python](https://www.python.org/downloads/)
-- Download and install [PHP](https://www.php.net/downloads.php) (Add to PATH)
-- Download [Ngrok](https://ngrok.com/download)
+1. **Install Python**:
+   - Download from [Python.org](https://www.python.org/downloads/)
+   - During installation, check **"Add Python to PATH"**
+   
+2. **Install PHP**:
+   - Download from [PHP.net](https://windows.php.net/download/)
+   - Extract to `C:\php`
+   - Add `C:\php` to System PATH:
+     - Right-click "This PC" → Properties → Advanced System Settings
+     - Environment Variables → System Variables → Path → Edit → New
+     - Add `C:\php` → OK
+   
+3. **Install Git** (Optional but recommended):
+   - Download from [git-scm.com](https://git-scm.com/download/win)
+   
+4. **Install Ngrok**:
+   - Download from [Ngrok.com](https://ngrok.com/download)
+   - Extract `ngrok.exe` to a folder (e.g., `C:\ngrok`)
+   - Add the folder to System PATH (same steps as PHP)
+   
+5. **Install Dependencies**:
+   Open Command Prompt or PowerShell and run:
+   ```powershell
+   pip install watchdog colorama
+   ```
 
 ---
 
@@ -83,10 +105,14 @@ You need an **Ngrok Authtoken** to use the tunneling feature.
 
 ## 🎮 Usage
 
-Run the script using Python:
-
+**Linux / macOS / Termux**:
 ```bash
 python3 main.py
+```
+
+**Windows** (Command Prompt or PowerShell):
+```powershell
+python main.py
 ```
 
 ### Steps:
@@ -105,10 +131,12 @@ python3 main.py
     - Ensure your Ngrok token is valid.
     - Check your internet connection.
     - If you are in a restricted region, use a VPN.
-- **"php: command not found"**:
+- **"php: command not found"** (Linux/Mac) or **"'php' is not recognized"** (Windows):
     - Ensure PHP is installed and added to your system PATH.
+    - On Windows, restart Command Prompt/PowerShell after adding to PATH.
 - **"ModuleNotFoundError"**:
-    - Run `pip3 install watchdog colorama`.
+    - Run `pip3 install watchdog colorama` (Linux/Mac)
+    - Run `pip install watchdog colorama` (Windows)
 
 ---
 
